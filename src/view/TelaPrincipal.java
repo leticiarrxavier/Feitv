@@ -13,9 +13,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form TelaPrincipal
      */
-    public TelaPrincipal() {
-        initComponents();
-    }
+   private model.Usuario usuarioLogado;
+
+public TelaPrincipal(model.Usuario usuario) {
+    this.usuarioLogado = usuario;
+    initComponents();
+    setLocationRelativeTo(null);
+}
+
+public TelaPrincipal() {
+    initComponents();
+    setLocationRelativeTo(null);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.

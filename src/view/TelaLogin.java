@@ -11,9 +11,44 @@ public class TelaLogin extends javax.swing.JFrame {
     private static final String SENHA_ADMIN = "admin123";
     
     public TelaLogin() {
-        initComponents();
-        setLocationRelativeTo(null);
-    }
+    initComponents();
+    setLocationRelativeTo(null);
+    jTextField1.setText("Email");
+    jTextField1.setForeground(new java.awt.Color(150, 150, 150));
+    jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusGained(java.awt.event.FocusEvent e) {
+            if (jTextField1.getText().equals("Email")) {
+                jTextField1.setText("");
+                jTextField1.setForeground(java.awt.Color.WHITE);
+            }
+        }
+        public void focusLost(java.awt.event.FocusEvent e) {
+            if (jTextField1.getText().isEmpty()) {
+                jTextField1.setText("Email");
+                jTextField1.setForeground(new java.awt.Color(150, 150, 150));
+            }
+        }
+    });
+    jPasswordField1.setEchoChar((char)0);
+    jPasswordField1.setText("Senha");
+    jPasswordField1.setForeground(new java.awt.Color(150, 150, 150));
+    jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusGained(java.awt.event.FocusEvent e) {
+            if (String.valueOf(jPasswordField1.getPassword()).equals("Senha")) {
+                jPasswordField1.setText("");
+                jPasswordField1.setEchoChar('•');
+                jPasswordField1.setForeground(java.awt.Color.WHITE);
+            }
+        }
+        public void focusLost(java.awt.event.FocusEvent e) {
+            if (jPasswordField1.getPassword().length == 0) {
+                jPasswordField1.setEchoChar((char)0);
+                jPasswordField1.setText("Senha");
+                jPasswordField1.setForeground(new java.awt.Color(150, 150, 150));
+            }
+        }
+    });
+}
     
     private void fazerLogin() {
         String email = jTextField1.getText().trim();
@@ -55,8 +90,7 @@ public class TelaLogin extends javax.swing.JFrame {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    @SuppressWarnings("unchecked")                       
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -78,48 +112,48 @@ public class TelaLogin extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(14, 14, 14));
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jPanel1.setName("pnlTopo"); // NOI18N
+        jPanel1.setName("pnlTopo"); 
 
-        jLabel1.setFont(new java.awt.Font("Arial Black", 1, 32)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial Black", 1, 32)); 
         jLabel1.setForeground(new java.awt.Color(229, 9, 20));
         jLabel1.setText("FEItv - Mat e Let");
 
         jPanel2.setBackground(new java.awt.Color(30, 30, 30));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        jLabel2.setFont(new java.awt.Font("Arial Black", 1, 20)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial Black", 1, 20)); 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Entrar");
-        jLabel2.setName("lblTitulo"); // NOI18N
+        jLabel2.setName("lblTitulo"); 
 
         jTextField1.setBackground(new java.awt.Color(51, 51, 51));
-        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 15)); 
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setText("Email:");
+        jTextField1.setText("");
         jTextField1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
-        jTextField1.setName("txtEmail"); // NOI18N
+        jTextField1.setName("txtEmail"); 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
         });
 
-        jPasswordField1.setEditable(false);
+        
         jPasswordField1.setBackground(new java.awt.Color(51, 51, 51));
-        jPasswordField1.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
+        jPasswordField1.setFont(new java.awt.Font("SansSerif", 0, 15)); 
         jPasswordField1.setForeground(new java.awt.Color(255, 255, 255));
-        jPasswordField1.setText("Senha:");
+        jPasswordField1.setText("");
         jPasswordField1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
-        jPasswordField1.setName("txtSenha"); // NOI18N
+        jPasswordField1.setName("txtSenha"); 
 
         jButton1.setBackground(new java.awt.Color(229, 9, 20));
-        jButton1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Arial", 1, 16)); 
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Entrar");
         jButton1.setBorderPainted(false);
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.setFocusPainted(false);
-        jButton1.setName("btnEntrar"); // NOI18N
+        jButton1.setName("btnEntrar"); 
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -127,13 +161,13 @@ public class TelaLogin extends javax.swing.JFrame {
         });
 
         jButton2.setBackground(new java.awt.Color(64, 64, 64));
-        jButton2.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
+        jButton2.setFont(new java.awt.Font("SansSerif", 0, 13)); 
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Entrar como Admin");
         jButton2.setBorderPainted(false);
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.setFocusPainted(false);
-        jButton2.setName("btnAdmin"); // NOI18N
+        jButton2.setName("btnAdmin"); 
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -183,18 +217,18 @@ public class TelaLogin extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(20, 20, 20));
 
-        jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); 
         jLabel3.setForeground(new java.awt.Color(179, 179, 179));
         jLabel3.setText("Novo por aqui?");
-        jLabel3.setName("lblNovo"); // NOI18N
+        jLabel3.setName("lblNovo"); 
 
-        jButton3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton3.setFont(new java.awt.Font("SansSerif", 1, 14)); 
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Cadastrar");
         jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jButton3.setContentAreaFilled(false);
         jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.setName("btnCadastrar"); // NOI18N
+        jButton3.setName("btnCadastrar"); 
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -272,34 +306,28 @@ public class TelaLogin extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }                 
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
         fazerLogin();
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }                                           
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
          fazerLogin();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }                                        
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         fazerLoginAdmin();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }                                        
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         dispose();
         new TelaCadastro().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }                                        
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+     
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -316,9 +344,7 @@ public class TelaLogin extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
+      
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaLogin().setVisible(true);
@@ -326,7 +352,7 @@ public class TelaLogin extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+                  
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -337,6 +363,5 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
-    // End of variables declaration//GEN-END:variables
+    private javax.swing.JTextField jTextField1;                
 }
