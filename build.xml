@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build.                  -->
+<!-- (If you delete it and reopen the project, it is recreated.)   -->
+<!-- By default, only the Clean and Build commands use this build.xml, -->
+<!-- updating libraries is not done here.                          -->
+<project name="FeiTv_Final" default="default" basedir=".">
+    <description>Builds, tests, and runs the project FeiTv_Final.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and therefore
+    temporary targets (e.g., "jar" or "run") that have an "depends" clause
+    that specifies a target list.
+
+    For example:
+
+        <target name="-post-jar" depends="-init-macrodef-jar">
+            <pathconvert property="libraries.classpath" pathsep=" ">
+                <path>
+                    <fileset dir="${basedir}/lib" includes="*.jar"/>
+                </path>
+            </pathconvert>
+            <echo message="${dist.jar}"/>
+            <jar jarfile="${dist.jar}" update="true">
+                <manifest>
+                    <attribute name="Main-Class" value="${main.class}"/>
+                    <attribute name="Class-Path" value="${libraries.classpath}"/>
+                </manifest>
+            </jar>
+        </target>
+
+    -->
+    <target name="default" depends="run" description="Build and run the project."/>
+    
+    <target name="-pre-init">
+        <property name="build.dir" value="build"/>
+        <property name="dist.dir" value="dist"/>
+        <property name="src.dir" value="src"/>
+        <property name="lib.dir" value="lib"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    
+    <target name="compile" depends="clean">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}/classes"
+               includeantruntime="false" encoding="UTF-8" source="11" target="11">
+            <classpath>
+                <fileset dir="${lib.dir}" includes="*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="jar" depends="compile">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/FeiTv_Final.jar" basedir="${build.dir}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="Main"/>
+                <attribute name="Class-Path" value="../lib/postgresql-42.7.3.jar"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run" depends="jar">
+        <java jar="${dist.dir}/FeiTv_Final.jar" fork="true">
+            <classpath>
+                <pathelement location="${dist.dir}/FeiTv_Final.jar"/>
+                <fileset dir="${lib.dir}" includes="*.jar"/>
+            </classpath>
+        </java>
+    </target>
+</project>
