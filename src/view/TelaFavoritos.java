@@ -4,77 +4,44 @@ import controller.ListaController;
 import controller.VideoController;
 import model.*;
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
-public class TelaFavoritos extends JFrame {
+public class TelaFavoritos extends javax.swing.JFrame {
 
-    private Usuario usuarioLogado;
-    private ListaController listaCtrl  = new ListaController();
-    private VideoController  videoCtrl = new VideoController();
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaFavoritos.class.getName());
 
-    private DefaultListModel<ListaReproducao> modelListas = new DefaultListModel<>();
-    private JList<ListaReproducao>            listaListas = new JList<>(modelListas);
+    private model.Usuario usuarioLogado;
+    private controller.ListaController listaCtrl = new controller.ListaController();
+    private controller.VideoController videoCtrl = new controller.VideoController();
+    private DefaultListModel<model.ListaReproducao> modelListas = new DefaultListModel<>();
+    private DefaultListModel<model.Video> modelVideos = new DefaultListModel<>();
 
-    private DefaultListModel<Video> modelVideos = new DefaultListModel<>();
-    private JList<Video>            listaVideos = new JList<>(modelVideos);
-
-    public TelaFavoritos(Usuario usuario) {
+    public TelaFavoritos(model.Usuario usuario) {
         this.usuarioLogado = usuario;
-
-        setTitle("FEItv - Favoritos de " + usuario.getNome());
-        setSize(700, 450);
-        setLayout(new BorderLayout(10, 10));
-
-        JPanel painelEsq = new JPanel(new BorderLayout());
-        painelEsq.setBorder(BorderFactory.createTitledBorder("Minhas Listas"));
-        painelEsq.add(new JScrollPane(listaListas), BorderLayout.CENTER);
-
-        JPanel botoesLista = new JPanel(new GridLayout(1, 3, 5, 5));
-        JButton btnCriar   = new JButton("Criar");
-        JButton btnEditar  = new JButton("Editar");
-        JButton btnExcluir = new JButton("Excluir");
-        botoesLista.add(btnCriar); botoesLista.add(btnEditar); botoesLista.add(btnExcluir);
-        painelEsq.add(botoesLista, BorderLayout.SOUTH);
-        add(painelEsq, BorderLayout.WEST);
-
-        JPanel painelDir = new JPanel(new BorderLayout());
-        painelDir.setBorder(BorderFactory.createTitledBorder("Vídeos da Lista"));
-        painelDir.add(new JScrollPane(listaVideos), BorderLayout.CENTER);
-
-        JPanel botoesVideo = new JPanel(new GridLayout(1, 2, 5, 5));
-        JButton btnAdicionar = new JButton("Adicionar Vídeo");
-        JButton btnRemover   = new JButton("Remover Vídeo");
-        botoesVideo.add(btnAdicionar); botoesVideo.add(btnRemover);
-        painelDir.add(botoesVideo, BorderLayout.SOUTH);
-        add(painelDir, BorderLayout.CENTER);
-
-        btnCriar.addActionListener(e -> criarLista());
-        btnEditar.addActionListener(e -> editarLista());
-        btnExcluir.addActionListener(e -> excluirLista());
-        btnAdicionar.addActionListener(e -> adicionarVideo());
-        btnRemover.addActionListener(e -> removerVideo());
-
-        listaListas.addListSelectionListener(e -> {
+        initComponents();
+        setLocationRelativeTo(null);
+        jListListas.setModel(modelListas);
+        jListVideos.setModel(modelVideos);
+        jBtnVoltar.addActionListener(e -> dispose());
+        jBtnEditar.addActionListener(e -> editarLista());
+        jBtnExcluir.addActionListener(e -> excluirLista());
+        jListListas.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) carregarVideosDaLista();
         });
-
         carregarListas();
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
 
     private void carregarListas() {
         modelListas.clear();
-        for (ListaReproducao l : listaCtrl.listarPorUsuario(usuarioLogado.getId()))
+        for (model.ListaReproducao l : listaCtrl.listarPorUsuario(usuarioLogado.getId()))
             modelListas.addElement(l);
     }
 
     private void carregarVideosDaLista() {
         modelVideos.clear();
-        ListaReproducao sel = listaListas.getSelectedValue();
+        model.ListaReproducao sel = jListListas.getSelectedValue();
         if (sel == null) return;
-        for (Video v : listaCtrl.listarVideos(sel.getId()))
+        for (model.Video v : listaCtrl.listarVideos(sel.getId()))
             modelVideos.addElement(v);
     }
 
@@ -86,7 +53,7 @@ public class TelaFavoritos extends JFrame {
     }
 
     private void editarLista() {
-        ListaReproducao sel = listaListas.getSelectedValue();
+        model.ListaReproducao sel = jListListas.getSelectedValue();
         if (sel == null) { JOptionPane.showMessageDialog(this, "Selecione uma lista."); return; }
         String novoNome = JOptionPane.showInputDialog(this, "Novo nome:", sel.getNome());
         if (novoNome == null || novoNome.trim().isEmpty()) return;
@@ -95,7 +62,7 @@ public class TelaFavoritos extends JFrame {
     }
 
     private void excluirLista() {
-        ListaReproducao sel = listaListas.getSelectedValue();
+        model.ListaReproducao sel = jListListas.getSelectedValue();
         if (sel == null) { JOptionPane.showMessageDialog(this, "Selecione uma lista."); return; }
         int confirm = JOptionPane.showConfirmDialog(this, "Excluir lista '" + sel.getNome() + "'?");
         if (confirm == JOptionPane.YES_OPTION) {
@@ -106,11 +73,11 @@ public class TelaFavoritos extends JFrame {
     }
 
     private void adicionarVideo() {
-        ListaReproducao lista = listaListas.getSelectedValue();
+        model.ListaReproducao lista = jListListas.getSelectedValue();
         if (lista == null) { JOptionPane.showMessageDialog(this, "Selecione uma lista primeiro."); return; }
-        ArrayList<Video> todos = videoCtrl.listarTodos();
-        Video[] arr = todos.toArray(new Video[0]);
-        Video escolhido = (Video) JOptionPane.showInputDialog(
+        ArrayList<model.Video> todos = videoCtrl.listarTodos();
+        model.Video[] arr = todos.toArray(new model.Video[0]);
+        model.Video escolhido = (model.Video) JOptionPane.showInputDialog(
             this, "Escolha o vídeo:", "Adicionar à Lista",
             JOptionPane.PLAIN_MESSAGE, null, arr, arr.length > 0 ? arr[0] : null
         );
@@ -120,8 +87,8 @@ public class TelaFavoritos extends JFrame {
     }
 
     private void removerVideo() {
-        ListaReproducao lista = listaListas.getSelectedValue();
-        Video video = listaVideos.getSelectedValue();
+        model.ListaReproducao lista = jListListas.getSelectedValue();
+        model.Video video = jListVideos.getSelectedValue();
         if (lista == null || video == null) {
             JOptionPane.showMessageDialog(this, "Selecione uma lista e um vídeo.");
             return;
@@ -129,4 +96,278 @@ public class TelaFavoritos extends JFrame {
         listaCtrl.removerVideo(lista.getId(), video.getId());
         carregarVideosDaLista();
     }
+
+}
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabelTitulo = new javax.swing.JLabel();
+        jLabelMinhasListas = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabelListas = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListListas = new javax.swing.JList<>();
+        jBtnNovaLista = new javax.swing.JButton();
+        jBtnEditar = new javax.swing.JButton();
+        jBtnExcluir = new javax.swing.JButton();
+        jLabelVideos = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListVideos = new javax.swing.JList<>();
+        jBtnAdicionar = new javax.swing.JButton();
+        jBtnRemover = new javax.swing.JButton();
+        jBtnVoltar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("FEItv - Favoritos");
+        setBackground(new java.awt.Color(18, 18, 18));
+
+        jPanel2.setForeground(new java.awt.Color(30, 30, 30));
+
+        jPanel1.setBackground(new java.awt.Color(30, 30, 30));
+
+        jLabelTitulo.setFont(new java.awt.Font("Arial Black", 1, 32)); // NOI18N
+        jLabelTitulo.setForeground(new java.awt.Color(220, 20, 20));
+        jLabelTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelTitulo.setText("FEItv - Mat e Let");
+        jLabelTitulo.setToolTipText("");
+
+        jLabelMinhasListas.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelMinhasListas.setFont(new java.awt.Font("Arial Black", 1, 20)); // NOI18N
+        jLabelMinhasListas.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelMinhasListas.setText("Minhas Listas");
+
+        jPanel3.setBackground(new java.awt.Color(30, 30, 30));
+        jPanel3.setToolTipText("");
+
+        jLabelListas.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabelListas.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelListas.setText("Listas de Reprodução");
+
+        jListListas.setBackground(new java.awt.Color(51, 51, 51));
+        jListListas.setForeground(new java.awt.Color(255, 255, 255));
+        jListListas.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListListas.setSelectionBackground(new java.awt.Color(229, 9, 20));
+        jListListas.setSelectionForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setViewportView(jListListas);
+
+        jBtnNovaLista.setLabel("Nova Lista");
+        jBtnNovaLista.addActionListener(this::jBtnNovaListaActionPerformed);
+
+        jBtnEditar.setLabel("Editar");
+
+        jBtnExcluir.setLabel("Excluir");
+
+        jLabelVideos.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabelVideos.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelVideos.setText("Vídeos da Lista");
+
+        jListVideos.setBackground(new java.awt.Color(51, 51, 51));
+        jListVideos.setForeground(new java.awt.Color(255, 255, 255));
+        jListVideos.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jListVideos.setSelectionBackground(new java.awt.Color(229, 9, 20));
+        jListVideos.setSelectionForeground(new java.awt.Color(255, 255, 255));
+        jListVideos.setVerifyInputWhenFocusTarget(false);
+        jScrollPane2.setViewportView(jListVideos);
+
+        jBtnAdicionar.setBackground(new java.awt.Color(229, 9, 20));
+        jBtnAdicionar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jBtnAdicionar.setForeground(new java.awt.Color(255, 255, 255));
+        jBtnAdicionar.setText("Adicionar Vídeo");
+        jBtnAdicionar.setBorderPainted(false);
+        jBtnAdicionar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnAdicionar.setFocusPainted(false);
+        jBtnAdicionar.addActionListener(this::jBtnAdicionarActionPerformed);
+
+        jBtnRemover.setBackground(new java.awt.Color(229, 9, 20));
+        jBtnRemover.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jBtnRemover.setForeground(new java.awt.Color(255, 255, 255));
+        jBtnRemover.setText("Remover Vídeo");
+        jBtnRemover.setBorderPainted(false);
+        jBtnRemover.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRemover.setFocusPainted(false);
+        jBtnRemover.addActionListener(this::jBtnRemoverActionPerformed);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelListas)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jBtnNovaLista, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBtnEditar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBtnExcluir)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelVideos)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jBtnAdicionar)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jBtnRemover))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelListas)
+                    .addComponent(jLabelVideos))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtnNovaLista)
+                    .addComponent(jBtnEditar)
+                    .addComponent(jBtnExcluir)
+                    .addComponent(jBtnAdicionar)
+                    .addComponent(jBtnRemover))
+                .addContainerGap(90, Short.MAX_VALUE))
+        );
+
+        jBtnVoltar.setBackground(new java.awt.Color(64, 64, 64));
+        jBtnVoltar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jBtnVoltar.setForeground(new java.awt.Color(255, 255, 255));
+        jBtnVoltar.setText("Voltar");
+        jBtnVoltar.setBorderPainted(false);
+        jBtnVoltar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnVoltar.setFocusPainted(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabelTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jBtnVoltar))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(225, 225, 225)
+                        .addComponent(jLabelMinhasListas)))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTitulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jLabelMinhasListas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnVoltar)
+                .addGap(8, 8, 8))
+        );
+
+        jLabelTitulo.getAccessibleContext().setAccessibleName("FEItv - Mat e Let");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.LINE_START);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jBtnNovaListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNovaListaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnNovaListaActionPerformed
+
+    private void jBtnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAdicionarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnAdicionarActionPerformed
+
+    private void jBtnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnRemoverActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnRemoverActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> new TelaFavoritos().setVisible(true));
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBtnAdicionar;
+    private javax.swing.JButton jBtnEditar;
+    private javax.swing.JButton jBtnExcluir;
+    private javax.swing.JButton jBtnNovaLista;
+    private javax.swing.JButton jBtnRemover;
+    private javax.swing.JButton jBtnVoltar;
+    private javax.swing.JLabel jLabelListas;
+    private javax.swing.JLabel jLabelMinhasListas;
+    private javax.swing.JLabel jLabelTitulo;
+    private javax.swing.JLabel jLabelVideos;
+    private javax.swing.JList<String> jListListas;
+    private javax.swing.JList<String> jListVideos;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    // End of variables declaration//GEN-END:variables
 }
